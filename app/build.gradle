@@ -1,5 +1,12 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'checkstyle'
+    id 'com.adarshr.test-logger' version '3.2.0'
+    id 'com.github.ben-manes.versions' version '0.42.0'
+    id 'io.ebean' version '13.6.3'
+    id 'jacoco'
+    id 'idea'
 }
 
 group = 'hexlet.code'
@@ -9,9 +16,47 @@ repositories {
     mavenCentral()
 }
 
+compileJava {
+    options.release = 17
+    options.encoding = 'UTF-8'
+}
+
+application {
+    mainClass = 'hexlet.code.App'
+}
+
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.9.1')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation "io.javalin:javalin:4.6.1"
+    implementation 'org.slf4j:slf4j-simple:1.7.36'
+
+    implementation 'org.thymeleaf:thymeleaf:3.0.15.RELEASE'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
+    implementation 'org.webjars:bootstrap:5.1.3'
+
+    implementation 'com.h2database:h2:2.1.212'
+    implementation 'org.postgresql:postgresql:42.3.6'
+
+    implementation 'io.ebean:ebean:13.6.3'
+    implementation 'io.ebean:ebean-ddl-generator:13.6.3'
+    implementation 'io.ebean:ebean-querybean:13.6.3'
+    implementation 'io.ebean:ebean-migration:13.0.0'
+    implementation 'io.ebean:ebean-annotation:8.0'
+    annotationProcessor 'io.ebean:querybean-generator:13.6.3'
+
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.5'
+    implementation 'javax.activation:activation:1.1.1'
+
+    implementation 'org.jsoup:jsoup:1.15.2'
+
+    implementation 'com.konghq:unirest-java:3.13.10'
+
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
+    testImplementation 'org.assertj:assertj-core:3.23.1'
+    testImplementation 'io.ebean:ebean-test:13.6.3'
+    testImplementation 'com.konghq:unirest-java:3.13.10'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.10.0'
 }
 
 test {
