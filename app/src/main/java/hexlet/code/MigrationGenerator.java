@@ -2,7 +2,6 @@ package hexlet.code;
 
 import io.ebean.annotation.Platform;
 import io.ebean.dbmigration.DbMigration;
-import io.ebean.annotation.Platform;
 
 import java.io.IOException;
 

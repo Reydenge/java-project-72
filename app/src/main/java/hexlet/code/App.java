@@ -10,7 +10,9 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 
-import static io.javalin.apibuilder.ApiBuilder.*;
+import static io.javalin.apibuilder.ApiBuilder.path;
+import static io.javalin.apibuilder.ApiBuilder.get;
+import static io.javalin.apibuilder.ApiBuilder.post;
 
 
 public final class App {
@@ -49,6 +51,7 @@ public final class App {
                 post(UrlController.createUrl);
                 path("{id}", () -> {
                     get(UrlController.showUrl);
+                    post("/checks", UrlController.checkUrl);
                 });
             });
         });
