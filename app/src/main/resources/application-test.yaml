@@ -1,6 +1,0 @@
-ebean:
-  test:
-    useDocker: false
-    platform: h2
-    ddlMode: dropCreate
-    dbName: test
