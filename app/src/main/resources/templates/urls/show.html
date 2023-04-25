@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{layouts/application.html}">
+
+<head>
+  <title>Анализатор страниц</title>
+</head>
+<section layout:fragment="content">
+  <div class="container-lg mt-5">
+    <h2>Сайт </h2>
+    <table class="table table-bordered table-hover mt-3" th:object="${url}">
+      <tr>
+        <td>ID </td>
+        <td th:text="*{id}"></td>
+      </tr>
+      <tr>
+        <td>Имя </td>
+        <td th:text="*{name}"></td>
+      </tr>
+      <tr>
+        <td>Дата создания </td>
+        <td th:text="*{createdAt}"></td>
+      </tr>
+    </table>
+    <h2>Проверки</h2>
+    <form method="post" th:action="@{/urls/{id}/checks(id=${url.getId()})}">
+      <nav aria-label="Control buttons">
+        <button class="btn btn-primary" type="submit">Запустить проверку</button>
+      </nav>
+    </form>
+
+    <table class="table table-bordered table-hover mt-3" style="table-layout:fixed;">
+      <thead>
+      <tr>
+        <th class="col-sm-2">ID</th>
+        <th class="col-sm-2">Код ответа</th>
+        <th class="col-sm-2">title</th>
+        <th class="col-sm-2">h1</th>
+        <th class="col-sm-2">description</th>
+        <th class="col-sm-2">Дата проверки</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="urlCheck : ${urlChecks}" th:object="${urlCheck}">
+        <style>
+          td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        </style>
+        <td class="col-sm-2" th:text="*{getId()}"></td>
+        <td class="col-sm-2" th:text="*{getStatusCode()}"></td>
+        <td class="col-sm-2" th:text="${#strings.abbreviate(urlCheck.getTitle(), 50)}"></td>
+        <td class="col-sm-2" th:text="${#strings.abbreviate(urlCheck.getH1(), 50)}"></td>
+        <td class="col-sm-2" th:text="${#strings.abbreviate(urlCheck.getDescription(), 150)}"></td>
+        <td class="col-sm-2" th:text="${#temporals.format(urlCheck.getCreatedAt(), 'dd/MM/yyyy HH:mm')}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</html>
