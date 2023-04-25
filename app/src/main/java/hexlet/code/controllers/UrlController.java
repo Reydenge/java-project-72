@@ -1,10 +1,17 @@
 package hexlet.code.controllers;
 
 import hexlet.code.domain.Url;
+import hexlet.code.domain.UrlCheck;
 import hexlet.code.domain.query.QUrl;
 import io.ebean.PagedList;
 import io.javalin.http.Handler;
 import io.javalin.http.NotFoundResponse;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -53,7 +60,7 @@ public class UrlController {
         }
     };
 
-    public static String parseUrl (String transmittedUrl) {
+    public static String parseUrl(String transmittedUrl) {
         try {
             URL url = new URL(transmittedUrl);
             String urlProtocol = url.getProtocol();
@@ -77,5 +84,50 @@ public class UrlController {
 
         ctx.attribute("url", url);
         ctx.render("urls/show.html");
+    };
+
+    public static Handler checkUrl = ctx -> {
+        long id = ctx.pathParamAsClass("id", Long.class).getOrDefault(null);
+
+        Url url = new QUrl()
+                .id.equalTo(id)
+                .findOne();
+
+        try {
+            if (url == null) {
+                throw new NotFoundResponse();
+            }
+            String urlName = url.getName();
+            HttpResponse<String> response = Unirest.get(urlName).asString();
+
+            String context = response.getBody();
+            Document doc = Jsoup.parse(context);
+
+            int statusCode = response.getStatus();
+            String title = doc.title();
+            String h1 = "";
+            String description = "";
+
+            Element h1Element = doc.selectFirst("h1");
+            Element descriptionElement = doc.selectFirst("meta[name=description]");
+
+            if (h1Element != null) {
+                h1 = h1Element.text();
+            }
+            if (descriptionElement != null) {
+                description = descriptionElement.attr("content");
+            }
+
+            UrlCheck urlCheck = new UrlCheck(statusCode, title, h1, description, url);
+            urlCheck.save();
+
+            ctx.sessionAttribute("flash", "Страница успешно проверена");
+            ctx.sessionAttribute("flash-type", "success");
+        } catch (UnirestException e) {
+            ctx.sessionAttribute("flash", "Некорректный адрес");
+            ctx.sessionAttribute("flash-type", "danger");
+        } finally {
+            ctx.render("/urls/" + id);
+        }
     };
 }
