@@ -1,40 +1,31 @@
-setup:
-	make -C app setup
 
 clean:
 	make -C app clean
 
 build:
-	make -C app build
-
-start:
-	make -C app start
+	make -C app clean build
 
 install:
-	make -C app install
+	make -C app clean install
 
-start-dist:
-	make -C app start-dist
+run-dist:
+	make -C app run-dist
 
-generate-migrations:
-	make -C app generate-migrations
-
-lint:
-	make -C app lint
+run:
+	make -C app clean run
 
 test:
 	make -C app test
 
+lint:
+	make -C app lint
+
 report:
 	make -C app report
 
-check-updates:
-	make -C app check-updates
+wrapper:
+	make -C app wrapper
 
-image-build:
-	docker build -t hexletcomponents/java-javalin-blog:latest .
-
-image-push:
-	docker push hexletcomponents/java-javalin-blog:latest
+build-run: build run
 
 .PHONY: build
