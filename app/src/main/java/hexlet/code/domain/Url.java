@@ -22,9 +22,6 @@ public final class Url extends Model {
     @OneToMany
     private List<UrlCheck> urlChecks;
 
-    public Url() {
-    }
-
     public Url(String name) {
         this.name = name;
     }
@@ -41,8 +38,20 @@ public final class Url extends Model {
         return this.urlChecks;
     }
 
-    public Instant lastDate() {
-        final UrlCheck urlCheck = urlChecks.get(urlChecks.size() - 1);
-        return urlCheck.getCreatedAt();
+    public long getId() {
+        return id;
+    }
+
+    public Instant getLastCheckDate() {
+        if (!urlChecks.isEmpty()) {
+            return urlChecks.get(urlChecks.size() - 1).getCreatedAt();
+        }
+        return null;
+    }
+    public Integer getLastCheckStatus() {
+        if (!urlChecks.isEmpty()) {
+            return urlChecks.get(urlChecks.size() - 1).getStatusCode();
+        }
+        return null;
     }
 }
