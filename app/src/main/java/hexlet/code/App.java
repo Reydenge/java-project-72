@@ -49,10 +49,8 @@ public final class App {
             path("urls", () -> {
                 get(UrlController.listOfUrls);
                 post(UrlController.createUrl);
-                path("{id}", () -> {
-                    get(UrlController.showUrl);
-                    post("/checks", UrlController.checkUrl);
-                });
+                get("{id}", UrlController.showUrl);
+                post("{id}/checks", UrlController.checkUrl);
             });
         });
     }
