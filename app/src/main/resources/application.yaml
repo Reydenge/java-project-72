@@ -3,7 +3,7 @@ datasource:
   development:
     username: sa
     password: sa
-    url: "jdbc:h2:./database"
+    url: "jdbc:h2:./db_of_urls"
   production:
     username: ${JDBC_DATABASE_USERNAME}
     password: ${JDBC_DATABASE_PASSWORD}
