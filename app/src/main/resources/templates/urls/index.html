@@ -1,49 +1,54 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.w3.org/1999/xhtml"
-      layout:decorate="~{layouts/application.html}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/application.html}">
 
-<head>
-  <title>Анализатор страниц</title>
-</head>
 <section layout:fragment="content">
   <div class="container-lg mt-5">
-    <h1>Сайты</h1>
+    <div class="row ">
+      <div class="col-3">
+        <h1>Сайты</h1>
+      </div>
+    </div>
 
-    <table class="table table-bordered table-hover mt-3">
-      <thead>
-      <tr>
-        <th class="col-1">ID</th>
-        <th>Имя</th>
-        <th class="col-2">Последняя проверка</th>
-        <th class="col-1">Код ответа</th>
-      </tr>
-      </thead>
-      <tbody>
-
-      <tr th:each="url : ${urls}" th:object="${url}">
-        <td th:text="*{getId()}"></td>
-        <td>
-          <a th:href="@{/urls/{id}(id=*{getId()})}" th:text="${#strings.abbreviate(url.getName(), 30)}"></a>
-        </td>
-        <td th:text="${#temporals.format(url.getCreatedAt(), 'dd/MM/yyyy HH:mm')}"></td>
-        <td th:unless="${url.urlChecks.isEmpty}" th:text="${#temporals.format(url.lastDate, 'dd/MM/yyyy HH:mm')}"></td>
-        <td th:unless="${url.urlChecks.isEmpty}" th:text="*{urlChecks.get(0).statusCode}"></td>
-      </tr>
-      </tbody>
-    </table>
-    <nav aria-label="Page navigation" th:if="${#lists.size(pages)}">
-      <ul class="pagination justify-content-center mt-5">
-        <li th:class="'page-item' + ${currentPage <= 1 ? ' disabled' : ''}">
-          <a class="page-link" th:href="@{/urls(page=${currentPage - 1})}">Previous</a>
-        </li>
-        <li th:each="page : ${pages}" th:class="'page-item' + ${currentPage == page ? ' active' : ''}">
-          <a class="page-link" th:href="@{/urls(page=${page})}" th:text="${page}"></a>
-        </li>
-        <li th:class="'page-item' + ${currentPage >= #lists.size(pages) ? ' disabled' : ''}">
-          <a class="page-link" th:href="@{/urls(page=${currentPage + 1})}">Next</a>
-        </li>
-      </ul>
-    </nav>
+    <div class="row m-1">
+      <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+          <th class="col-1">ID</th>
+          <th class="col-8">Имя</th>
+          <th class="col-2">Последняя проверка</th>
+          <th class="col-1">Код ответа</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="url : ${urls}">
+          <td th:text="${url.getId()}"></td>
+          <td><a th:text="${url.getName()}" th:href="@{/urls/{id}(id=*{url.getId()})}"></a></td>
+          <td th:text="${#temporals.format(url.getLastCheckDate(), 'dd/MM/yyyy HH:mm')}"></td>
+          <td th:text="*{url.getLastCheckStatus}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
+  <nav th:if="${countUrls != 0}" aria-label="Page navigation p-0">
+    <ul class="pagination justify-content-center mt-3">
+      <li th:if="${countUrls + 10 - page * 10 > 10}" class="page-item disabled">
+        <a class="page-link" th:href="@{/urls(page=(${page < 2}) ? 1 : (${page - 1}))}">Previous</a>
+      </li>
+      <li th:if="${countUrls + 10 - page * 10 <= 10}" class="page-item">
+        <a class="page-link" th:href="@{/urls(page=(${page < 2}) ? 1 : (${page - 1}))}">Previous</a>
+      </li>
+
+      <li class="page-item active"><a class="page-link" th:text="${page}"></a></li>
+
+      <li th:if="${countUrls + 10 - page * 10 <= 10}" class="page-item disabled">
+        <a class="page-link" th:href="@{/urls(page=${page + 1})}">Next</a>
+      </li>
+      <li th:if="${countUrls + 10 - page * 10 > 10}" class="page-item">
+        <a class="page-link" th:href="@{/urls(page=${page + 1})}">Next</a>
+      </li>
+    </ul>
+  </nav>
 </section>
+
 </html>

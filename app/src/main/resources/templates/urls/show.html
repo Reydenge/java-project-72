@@ -19,42 +19,31 @@
       </tr>
       <tr>
         <td>Дата создания </td>
-        <td th:text="*{createdAt}"></td>
+        <td th:text="${#temporals.format(url.getCreatedAt(), 'dd/MM/yyyy HH:mm')}"></td>
       </tr>
     </table>
     <h2>Проверки</h2>
-    <form method="post" th:action="@{/urls/{id}/checks(id=${url.getId()})}">
-      <nav aria-label="Control buttons">
-        <button class="btn btn-primary" type="submit">Запустить проверку</button>
-      </nav>
+    <form method="post" th:action="@{/urls/{id}/checks(id=${url.id})}">
+      <button type="submit" class="btn btn-primary">Запустить проверку</button>
     </form>
 
-    <table class="table table-bordered table-hover mt-3" style="table-layout:fixed;">
+    <table class="table table-bordered table-hover mt-3">
       <thead>
-      <tr>
-        <th class="col-sm-2">ID</th>
-        <th class="col-sm-2">Код ответа</th>
-        <th class="col-sm-2">title</th>
-        <th class="col-sm-2">h1</th>
-        <th class="col-sm-2">description</th>
-        <th class="col-sm-2">Дата проверки</th>
-      </tr>
-      </thead>
+      <tr><th class="col-1">ID</th>
+        <th class="col-1">Код ответа</th>
+        <th>title</th>
+        <th>h1</th>
+        <th>description</th>
+        <th class="col-2">Дата проверки</th>
+      </tr></thead>
       <tbody>
-      <tr th:each="urlCheck : ${urlChecks}" th:object="${urlCheck}">
-        <style>
-          td {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-        </style>
-        <td class="col-sm-2" th:text="*{getId()}"></td>
-        <td class="col-sm-2" th:text="*{getStatusCode()}"></td>
-        <td class="col-sm-2" th:text="${#strings.abbreviate(urlCheck.getTitle(), 50)}"></td>
-        <td class="col-sm-2" th:text="${#strings.abbreviate(urlCheck.getH1(), 50)}"></td>
-        <td class="col-sm-2" th:text="${#strings.abbreviate(urlCheck.getDescription(), 150)}"></td>
-        <td class="col-sm-2" th:text="${#temporals.format(urlCheck.getCreatedAt(), 'dd/MM/yyyy HH:mm')}"></td>
+      <tr th:each="check : ${checks}" th:object="${check}">
+        <td th:text="*{getId()}"></td>
+        <td th:text="*{getStatusCode()}"></td>
+        <td th:text="*{#strings.abbreviate(getTitle(), 20)}"></td>
+        <td th:text="*{#strings.abbreviate(getH1(), 20)}"></td>
+        <td th:text="*{#strings.abbreviate(getDescription(), 50)}"></td>
+        <td th:text="*{#temporals.format(getCreatedAt(), 'dd/MM/yyyy HH:mm')}"></td>
       </tr>
       </tbody>
     </table>
