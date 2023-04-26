@@ -31,10 +31,13 @@ public class UrlController {
                 .findPagedList();
 
         List<Url> urls = pagedUrls.getList();
+        int countUrls = new QUrl()
+                .findCount();
 
         ctx.attribute("urls", urls);
         ctx.attribute("page", page);
-        ctx.render("urls.html");
+        ctx.attribute("countUrls", countUrls);
+        ctx.render("urls/index.html");
     };
 
     public static Handler createUrl = ctx -> {
@@ -43,21 +46,23 @@ public class UrlController {
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flash-type", "danger");
             ctx.redirect("/");
-        } else {
-            Url url = new QUrl()
-                    .name.equalTo(parsedUrl)
-                    .findOne();
-            if (url == null) {
-                url = new Url(parsedUrl);
-                url.save();
-                ctx.sessionAttribute("flash", "Страница успешно добавлена");
-                ctx.sessionAttribute("flash-type", "success");
-            } else {
-                ctx.sessionAttribute("flash", "Страница уже существует");
-                ctx.sessionAttribute("flash-type", "danger");
-            }
-            ctx.redirect("/urls");
+            return;
         }
+
+        Url url = new QUrl()
+                .name.equalTo(parsedUrl)
+                    .findOne();
+        if (url != null) {
+            ctx.sessionAttribute("flash", "Страница уже существует");
+            ctx.sessionAttribute("flash-type", "info");
+            return;
+        }
+
+        url = new Url(parsedUrl);
+        url.save();
+        ctx.sessionAttribute("flash", "Страница успешно добавлена");
+        ctx.sessionAttribute("flash-type", "success");
+        ctx.redirect("/urls");
     };
 
     public static String parseUrl(String transmittedUrl) {
@@ -72,17 +77,16 @@ public class UrlController {
     }
 
     public static Handler showUrl = ctx -> {
-        int id = ctx.pathParamAsClass("id", Integer.class).getOrDefault(null);
+        long id = ctx.pathParamAsClass("id", Long.class).getOrDefault(null);
 
         Url url = new QUrl()
                 .id.equalTo(id)
                 .findOne();
 
-        if (url == null) {
-            throw new NotFoundResponse();
-        }
+        List<UrlCheck> checks = url.getUrlChecks();
 
         ctx.attribute("url", url);
+        ctx.attribute("checks", checks);
         ctx.render("urls/show.html");
     };
 
@@ -93,15 +97,15 @@ public class UrlController {
                 .id.equalTo(id)
                 .findOne();
 
+        if (url == null) {
+            throw new NotFoundResponse();
+        }
         try {
-            if (url == null) {
-                throw new NotFoundResponse();
-            }
             String urlName = url.getName();
             HttpResponse<String> response = Unirest.get(urlName).asString();
 
-            String context = response.getBody();
-            Document doc = Jsoup.parse(context);
+            String content = response.getBody();
+            Document doc = Jsoup.parse(content);
 
             int statusCode = response.getStatus();
             String title = doc.title();
@@ -126,8 +130,7 @@ public class UrlController {
         } catch (UnirestException e) {
             ctx.sessionAttribute("flash", "Некорректный адрес");
             ctx.sessionAttribute("flash-type", "danger");
-        } finally {
-            ctx.render("/urls/" + id);
         }
+        ctx.redirect("/urls/" + id);
     };
 }
