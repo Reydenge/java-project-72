@@ -59,14 +59,14 @@ public class AppTest {
     void testRootPage() {
         HttpResponse<String> response = Unirest.get(baseUrl).asString();
         assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.getBody()).contains("Анализатор страниц");
+        assertThat(response.getBody()).contains("РђРЅР°Р»РёР·Р°С‚РѕСЂ СЃС‚СЂР°РЅРёС†");
     }
 
     @Test
     void testUrlsPage() {
         HttpResponse<String> response = Unirest.get(baseUrl + "/urls").asString();
         assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.getBody()).contains("Анализатор страниц");
+        assertThat(response.getBody()).contains("РђРЅР°Р»РёР·Р°С‚РѕСЂ СЃС‚СЂР°РЅРёС†");
     }
 
     @Test
@@ -95,7 +95,7 @@ public class AppTest {
         assertThat(response.getHeaders().getFirst("Location")).isEqualTo("/");
 
         HttpResponse<String> responseWithIncorrectUrl = Unirest.get(baseUrl).asString();
-        assertThat(responseWithIncorrectUrl.getBody()).contains("Некорректный URL");
+        assertThat(responseWithIncorrectUrl.getBody()).contains("РќРµРєРѕСЂСЂРµРєС‚РЅС‹Р№ URL");
     }
 
     @Test
@@ -119,7 +119,7 @@ public class AppTest {
         HttpResponse<String> newResponse = Unirest.get(baseUrl + "/urls").asString();
         assertThat(newResponse.getStatus()).isEqualTo(200);
         assertThat(newResponse.getBody()).contains(url);
-        assertThat(newResponse.getBody()).contains("Страница успешно добавлена");
+        assertThat(newResponse.getBody()).contains("РЎС‚СЂР°РЅРёС†Р° СѓСЃРїРµС€РЅРѕ РґРѕР±Р°РІР»РµРЅР°");
     }
 
     @Test
@@ -136,7 +136,7 @@ public class AppTest {
                 .asString();
 
         assertThat(responseGet.getStatus()).isEqualTo(200);
-        assertThat(responseGet.getBody()).contains("Страница уже существует");
+        assertThat(responseGet.getBody()).contains("РЎС‚СЂР°РЅРёС†Р° СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
         assertThat(responseGet.getBody()).contains(url);
     }
 
@@ -146,7 +146,7 @@ public class AppTest {
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(response.getBody()).contains("https://twitter.com");
         assertThat(response.getBody()).contains("description");
-        assertThat(response.getBody()).contains("Запустить проверку");
+        assertThat(response.getBody()).contains("Р—Р°РїСѓСЃС‚РёС‚СЊ РїСЂРѕРІРµСЂРєСѓ");
     }
 
     @Test
@@ -179,8 +179,8 @@ public class AppTest {
                 .getBody();
 
         assertThat(body).contains("200");
-        assertThat(body).contains("Хекслет");
-        assertThat(body).contains("Живое онлайн сообщество");
-        assertThat(body).contains("Это заголовок h1");
+        assertThat(body).contains("РҐРµРєСЃР»РµС‚");
+        assertThat(body).contains("Р–РёРІРѕРµ РѕРЅР»Р°Р№РЅ СЃРѕРѕР±С‰РµСЃС‚РІРѕ");
+        assertThat(body).contains("Р­С‚Рѕ Р·Р°РіРѕР»РѕРІРѕРє h1");
     }
 }
