@@ -16,8 +16,9 @@ import static io.javalin.apibuilder.ApiBuilder.post;
 
 
 public final class App {
+    private static final String DEFAULT_PORT = "5000";
     private static int getPort() {
-        String port = System.getenv().getOrDefault("PORT", "5000");
+        String port = System.getenv().getOrDefault("PORT", DEFAULT_PORT);
         return Integer.parseInt(port);
     }
 
